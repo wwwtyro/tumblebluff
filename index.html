@@ -1,0 +1,78 @@
+<html>
+
+    <head>
+    
+        <script src='perlin.js'></script>
+        <script src='vector.js'></script>
+        <script src='world.js'></script>
+
+        <script src='Three.js'></script>
+        <script src='view.js'></script>
+
+        <script src="keyboard.js"></script>
+    
+        <script>
+        
+            var world = undefined,
+                view  = undefined,
+                keyAxis = [0,0];
+
+
+            function onLoad() {
+                world = new World();
+                view = new View(world);
+                KeyboardJS.bind.axis('left', 'right', 'down', 'up', onMoveKey);
+                animate();
+                window.onresize = onResize;
+            }   
+                     
+
+            function onMoveKey(axis) {
+                keyAxis = axis.slice(0);
+            }
+
+
+            function onResize() {
+                view.renderer.setSize(window.innerWidth, window.innerHeight);
+                view.camera.aspect = window.innerWidth/window.innerHeight;
+                view.camera.updateProjectionMatrix();
+            }
+            
+            function animate() {
+                requestAnimationFrame(animate);
+                world.weed.externalForce = new vector(keyAxis[0], keyAxis[1]).unit().times(1.2);
+                keyAxis = [0, 0];
+                world.step(0.025);
+                view.render();
+            }
+            
+        
+        </script>
+    
+        <link href='http://fonts.googleapis.com/css?family=Pontano+Sans' rel='stylesheet' type='text/css'>
+        <style>
+        
+            #instructions {
+                position: absolute;
+                right: 4px;
+                bottom: 4px;
+                color: white;
+                font-size:22;
+                font-family: 'Pontano Sans', sans-serif;
+
+            }
+        
+        </style>
+    
+    
+    </head>
+
+    <body onload="onLoad();" style="padding:0px; margin:0px">
+    
+    <div id='instructions'> Use the arrow keys to move. </div>
+    
+        
+    </body>
+
+
+</html>
